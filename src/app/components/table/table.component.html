@@ -1,0 +1,51 @@
+<div class="table-container">
+  <div class="table-refersh-row">
+    <div class="recent-transactions-button" (click)="refresh()">
+      <img src="./assets/baseline_history_black_18dp.png" />
+      <span>Recent Transactions</span>
+    </div>
+  </div>
+    <table class="table-header-row">
+          <tr  *ngIf="!!(item$  && row)">
+              <th *ngFor="let headerCell of tableConfig; let i = index" [idx]="i" tezAlignToColumn [reCalculate$]="item$" [alginToRow]="row">
+                  {{headerCell.alias}}
+              </th>
+          </tr>
+      </table>
+      <cdk-virtual-scroll-viewport [itemSize]="20">
+        <table>
+          <tbody>
+            <tr #row>
+              <td *ngFor="let tableCell of tableConfig; let i =index;" [ngClass]="['table-cell-' + tableCell.key]">
+              </td>
+            </tr>
+            <tr *cdkVirtualFor="let item of item$ | async">
+              <td *ngFor="let tableCell of tableConfig; let i =index;" [ngClass]="['table-cell-' + tableCell.key]">
+      
+                  <ng-container [ngSwitch]="tableCell.key">
+                      <ng-container *ngSwitchCase="'time'">
+                          {{item[i] | date: 'MMM d yyyy , H:mm'}}
+                      </ng-container>
+
+                      <ng-container *ngSwitchCase="'sender'">
+                          {{item[i] | truncateString: 2: 4}}
+                      </ng-container>
+
+                      <ng-container *ngSwitchCase="'volume'">
+                          {{item[i]}} XTZ
+                      </ng-container>
+
+                      <ng-container *ngSwitchCase="'type'">
+                        <tez-type-chip [type]="item[i]"></tez-type-chip>
+                      </ng-container>
+      
+                      <ng-container *ngSwitchDefault>
+                          {{item[i]}}
+                      </ng-container>
+                  </ng-container>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </cdk-virtual-scroll-viewport>
+</div>
